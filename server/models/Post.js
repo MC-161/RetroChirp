@@ -2,16 +2,16 @@ import mongoose from "mongoose";
 
 const postSchema = mongoose.Schema(
   {
-    userId:{
-      type:String,
+    userId: {
+      type: String,
       required: true,
     },
-    firstName:{
-      type:String,
+    firstName: {
+      type: String,
       required: true,
     },
-    lastName:{
-      type:String,
+    lastName: {
+      type: String,
       required: true,
     },
     location: String,
@@ -20,12 +20,16 @@ const postSchema = mongoose.Schema(
     userPicturePath: String,
     likes: {
       type: Map,
-      of: Boolean
+      of: Boolean,
     },
     comments: {
-      types:Array,
+      type: Array,
       default: [],
-    }
+    },
   },
-  {timestamps: true}
-)
+  { timestamps: true }
+);
+
+const Post = mongoose.model("Post", postSchema);
+
+export default Post;

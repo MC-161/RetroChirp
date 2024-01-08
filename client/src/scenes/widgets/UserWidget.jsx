@@ -22,6 +22,7 @@ const UserWidget = ({ userId, picturePath }) => {
   const dark = palette.primary.dark;
   const medium = palette.primary.second;
   const main = palette.primary.main;
+  const second = palette.primary.second;
 
   const getUser = async () => {
     const response = await fetch(`http://localhost:3001/users/${userId}`, {
@@ -99,7 +100,7 @@ const UserWidget = ({ userId, picturePath }) => {
       
       {/* FOURTH ROW */}
       <Box p="1rem 0">
-        <Typography fontSize="1rem" color={main} fontWeight="500" mb="1rem">
+        <Typography fontSize="1rem" color={second} fontWeight="500" mb="1rem">
           Social Profiles
         </Typography>
 
@@ -107,10 +108,10 @@ const UserWidget = ({ userId, picturePath }) => {
           <FlexBetween gap="1rem">
             <Twitter fontSize='large'/>
             <Box>
-              <Typography color={main} fontWeight="500">
+              <Typography color={second} fontWeight="500">
                 Twitter
               </Typography>
-              <Typography color={medium}>@{twitter}</Typography>
+              <Typography color={main}>@{twitter}</Typography>
             </Box>
           </FlexBetween>
           <EditOutlined sx={{ color: main }} />
@@ -119,10 +120,10 @@ const UserWidget = ({ userId, picturePath }) => {
           <FlexBetween gap="1rem">
             <Instagram fontSize='large'/>
             <Box>
-              <Typography color={main} fontWeight="500">
+              <Typography color={second} fontWeight="500">
                 Instagram
               </Typography>
-              <Typography color={medium}>@{instagram}</Typography>
+              <Typography color={main}>@{instagram}</Typography>
             </Box>
           </FlexBetween>
           <EditOutlined sx={{ color: main }} />

@@ -19,7 +19,6 @@ const UserWidget = ({ userId, picturePath }) => {
   const { palette } = useTheme();
   const navigate = useNavigate();
   const token = useSelector((state) => state.token);
-  const dark = palette.primary.dark;
   const medium = palette.primary.second;
   const main = palette.primary.main;
   const second = palette.primary.second;
@@ -46,8 +45,6 @@ const UserWidget = ({ userId, picturePath }) => {
     lastName,
     platform,
     game,
-    viewedProfile,
-    impressions,
     friends,
     twitter,
     instagram

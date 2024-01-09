@@ -1,11 +1,7 @@
 import {
   EditOutlined,
   DeleteOutlined,
-  AttachFileOutlined,
-  GifBoxOutlined,
   ImageOutlined,
-  MicOutlined,
-  MoreHorizOutlined,
 } from "@mui/icons-material";
 import {
   Box,
@@ -15,7 +11,6 @@ import {
   useTheme,
   Button,
   IconButton,
-  useMediaQuery,
 } from "@mui/material";
 import FlexBetween from "components/FlexBetween";
 import Dropzone from "react-dropzone";
@@ -23,22 +18,20 @@ import UserImage from "components/UserImage";
 import WidgetWrapper from "components/WidgetWrapper";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setPost, setPosts } from "state";
+import { setPosts } from "state";
 
-
-const MyPostWidget = ({picturePath}) => {
-  const [post, setPost] = useState(null);
-  const {palette} = useTheme();
-  const [isImage, setIsImage] = useState(false);
+const MyPostWidget = ({ picturePath }) => {
   const dispatch = useDispatch();
-  const [image, setImage] = useState(null)
-  const {_id} = useSelector((state) => state.user);
+  const [isImage, setIsImage] = useState(false);
+  const [image, setImage] = useState(null);
+  const [post, setPost] = useState("");
+  const { palette } = useTheme();
+  const { _id } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
-  const isNonMobileScreens = useMediaQuery("(min-width: 1000px)");
   const mediumMain = palette.neutral.mediumMain;
   const medium = palette.neutral.medium;
 
-  const handlePost = async() => {
+  const handlePost = async () => {
     const formData = new FormData();
     formData.append("userId", _id);
     formData.append("description", post);
@@ -47,27 +40,24 @@ const MyPostWidget = ({picturePath}) => {
       formData.append("picturePath", image.name);
     }
 
-    const response = await fetch(`http:localhost:3001/posts`, {
+    const response = await fetch(`http://localhost:3001/posts`, {
       method: "POST",
-      headers: {Authorization:`Bearer ${token}`},
+      headers: { Authorization: `Bearer ${token}` },
       body: formData,
     });
-
     const posts = await response.json();
-    dispatch(setPosts({ posts }))
+    dispatch(setPosts({ posts }));
     setImage(null);
     setPost("");
   };
 
-
-
   return (
     <WidgetWrapper>
-      <FlexBetween gap={"1.5rem"}>
+      <FlexBetween gap="1.5rem">
         <UserImage image={picturePath} />
         <InputBase
-          placeholder="Chrip..."
-          onChange={(e) => {setPost(e.target.value)}}
+          placeholder="What's on your mind..."
+          onChange={(e) => setPost(e.target.value)}
           value={post}
           sx={{
             width: "100%",
@@ -83,7 +73,7 @@ const MyPostWidget = ({picturePath}) => {
           borderRadius="5px"
           mt="1rem"
           p="1rem"
-        > 
+        >
           <Dropzone
             acceptedFiles=".jpg,.jpeg,.png"
             multiple={false}
@@ -100,7 +90,7 @@ const MyPostWidget = ({picturePath}) => {
                 >
                   <input {...getInputProps()} />
                   {!image ? (
-                    <p>Add Image Here ↓</p>
+                    <p>Add Image Here</p>
                   ) : (
                     <FlexBetween>
                       <Typography>{image.name}</Typography>
@@ -121,7 +111,9 @@ const MyPostWidget = ({picturePath}) => {
           </Dropzone>
         </Box>
       )}
-      <Divider sx={{margin:"1.25rem 0"}}/>
+
+      <Divider sx={{ margin: "1.25rem 0" }} />
+
       <FlexBetween>
         <FlexBetween gap="0.25rem" onClick={() => setIsImage(!isImage)}>
           <ImageOutlined sx={{ color: mediumMain }} />
@@ -146,6 +138,6 @@ const MyPostWidget = ({picturePath}) => {
       </FlexBetween>
     </WidgetWrapper>
   );
-}
- 
+};
+
 export default MyPostWidget;

@@ -37,15 +37,6 @@ const Navbar = () => {
   const background = theme.palette.background.default;
   const primaryLight = theme.palette.primary.light;
   const alt = theme.palette.background.alt;
-
-  const handleLogout = () => {
-    dispatch(setLogout());
-    // Check if user is logged in before navigating
-    if (!user) {
-      navigate('/');
-    }
-  };
-
   const fullName = `${user.firstName} ${user.lastName}`;
 
   return (
@@ -83,12 +74,38 @@ const Navbar = () => {
         <FlexBetween gap="2rem">
           <IconButton onClick={() => dispatch(setMode())}>
             {theme.palette.mode === "dark" ? (
-              <DarkMode sx={{ fontSize: "25px" }} />
+              <DarkMode
+                sx={{
+                  fontSize: "25px",
+                  "&:hover": {
+                    cursor: "pointer",
+                    boxShadow: "0 0 10px rgba(255, 255, 255, 0.7)",
+                  },
+                }}
+              />
             ) : (
-              <LightMode sx={{ color: dark, fontSize: "25px" }} />
+              <LightMode
+                sx={{
+                  color: dark,
+                  fontSize: "25px",
+                  "&:hover": {
+                    cursor: "pointer",
+                    boxShadow: "0 0 10px rgba(255, 255, 255, 0.7)",
+                  },
+                }}
+              />
             )}
           </IconButton>
-          <Message sx={{ fontSize: "25px" }} />
+          <Message
+            sx={{
+              fontSize: "25px",
+              "&:hover": {
+                cursor: "pointer",
+                boxShadow: "0 0 10px rgba(255, 255, 255, 0.7)", 
+              },
+            }}
+            onClick={() => navigate("/chat")}
+          />
           <Notifications sx={{ fontSize: "25px" }} />
           <Help sx={{ fontSize: "25px" }} />
           <FormControl variant="standard" value={fullName}>
@@ -163,7 +180,10 @@ const Navbar = () => {
                 <LightMode sx={{ color: dark, fontSize: "25px" }} />
               )}
             </IconButton>
-            <Message sx={{ fontSize: "25px" }} />
+            <Message
+              sx={{ fontSize: "25px", cursor: "pointer" }}
+              onClick={() => navigate("/chat")}
+            />
             <Notifications sx={{ fontSize: "25px" }} />
             <Help sx={{ fontSize: "25px" }} />
             <FormControl variant="standard" value={fullName}>

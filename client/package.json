@@ -17,6 +17,8 @@
     "formik": "^2.4.5",
     "nes.css": "^2.3.0",
     "react": "^18.2.0",
+    "react-chat-engine": "^1.11.28",
+    "react-chat-engine-pretty": "^0.1.8",
     "react-dom": "^18.2.0",
     "react-dropzone": "^14.2.3",
     "react-redux": "^9.0.4",

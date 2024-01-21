@@ -1,52 +1,52 @@
+// ChatMenu.js
+import React, { useEffect, useState } from "react";
+import { Box, TextField } from "@mui/material";
 import FlexBetween from "./FlexBetween";
-import { TextField } from "@mui/material";
-import {Box} from "@mui/material";
 import Conversation from "components/Conversation";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setFriends } from "state";
-import {useTheme} from "@mui/material";
+import { useSelector } from "react-redux";
 
-const ChatMenu = ({userId}) => {
-  const dispatch = useDispatch();
-  const { palette } = useTheme();
+const ChatMenu = ({ userId, onSelectConversation }) => {
+  const [conversations, setConversations] = useState([]);
   const token = useSelector((state) => state.token);
-  const friends = useSelector((state) => state.user.friends);
-  
-  const getFriends = async () => {
-    
-    const response = await fetch(
-      `http://localhost:3001/users/${userId}/friends`,
-      {
+
+  const getConversations = async () => {
+    try {
+      const res = await fetch(`http://localhost:3001/conversations/${userId}`, {
         method: "GET",
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to fetch conversations: ${res.status}`);
       }
-    );
-    const data = await response.json();
-    dispatch(setFriends({ friends: data }));
+
+      const conversations = await res.json();
+      console.log(conversations);
+      setConversations(conversations);
+    } catch (error) {
+      console.error("Error fetching conversations:", error.message);
+    }
   };
 
   useEffect(() => {
-    getFriends();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
+    getConversations();
+  }, []);
 
   return (
-    <FlexBetween flexDirection={"column"} gap={"0.5rem"}>
-      <TextField placeholder="Search Friends"/>
-      <Box display="flex" flexDirection="column" gap="1.5rem">
-        {friends.map((friend) => (
-          <Conversation
-            key={friend._id}
-            friendId={friend._id}
-            name={`${friend.firstName} ${friend.lastName}`}
-            subtitle={friend.platform}
-            userPicturePath={friend.picturePath}
-          />
+    <Box height={"100%"} overflow={"scroll"} gap={"1rem"}>
+      <TextField placeholder="Search Friends" variant="outlined" />
+      <Box>
+        {conversations.map((c) => (
+          <div key={c._id} onClick={() => onSelectConversation(c)}>
+            <Conversation conversation={c} currentUser={userId} />
+          </div>
         ))}
       </Box>
-    </FlexBetween>
+    </Box>
   );
-}
- 
+};
+
 export default ChatMenu;

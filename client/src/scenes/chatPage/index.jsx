@@ -3,6 +3,7 @@ import Navbar from "scenes/navbar";
 import { useSelector } from "react-redux";
 import { Box } from "@mui/material";
 import ChatWidget from "scenes/widgets/ChatWidget";
+import MobileChatWidget from "scenes/widgets/MobileChatWidget";
 
 const ChatsPage = () => {
   const [user, setUser] = useState(null);
@@ -36,10 +37,12 @@ const ChatsPage = () => {
     return null;
   }
 
+  const isMobile = window.innerWidth <= 600; // Adjust the breakpoint as needed
+
   return (
     <Box>
       <Navbar />
-      <ChatWidget />
+      <ChatWidget/>
     </Box>
   );
 };

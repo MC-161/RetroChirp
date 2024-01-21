@@ -1,14 +1,38 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import UserImage from "./UserImage";
-import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material";
+import { useSelector } from "react-redux";
 
-const Conversation = ({ friendId, name, subtitle, userPicturePath }) => {
-  const navigate = useNavigate();
+const Conversation = ({ conversation, currentUser }) => {
+  const [user, setUser] = useState(null);
   const { palette } = useTheme();
-  const main = palette.primary.second;
-  const medium = palette.neutral.medium;
+  const mainColor = palette.primary.main;
+  const secondaryColor = palette.secondary.main;
+  const mediumColor = palette.text.secondary;
+  const token = useSelector((state) => state.token);
+
+  const getUser = async (uid) => {
+    try {
+      const response = await fetch(`http://localhost:3001/users/${uid}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      const data = await response.json();
+      console.log(data);
+      setUser(data);
+    } catch (error) {
+      console.error('Error fetching user:', error.message);
+    }
+  };
+
+  useEffect(() => {
+    const friendId = conversation.members.find((member) => member !== currentUser);
+    getUser(friendId);
+  }, [currentUser, conversation]);
 
   return (
     <Box
@@ -16,35 +40,48 @@ const Conversation = ({ friendId, name, subtitle, userPicturePath }) => {
       alignItems="center"
       padding="1rem"
       cursor="pointer"
-      onClick={() => {
-        navigate(`/profile/${friendId}`);
-        navigate(0);
-      }}
       sx={{
         "&:hover": {
-          backgroundColor: palette.background.paper,
+          backgroundColor: palette.background.default,
         },
-        cursor:"pointer"
+        cursor: "pointer",
       }}
     >
-      <UserImage image={userPicturePath} size="55px" />
+      {user ? (
+        <UserImage image={user.picturePath} size="55px" />
+      ) : (
+        <Box
+          width="55px"
+          height="55px"
+          backgroundColor={palette.background.default}
+          borderRadius="50%"
+        />
+      )}
       <Box marginLeft="1rem">
-        <Typography
-          color={main}
-          variant="h6"
-          fontWeight="500"
-          sx={{
-            "&:hover": {
-              color: palette.primary.dark,
-            },
-            display: "block", // Ensures proper spacing and alignment
-          }}
-        >
-          {name}
-        </Typography>
-        <Typography color={medium} fontSize="0.75rem">
-          {subtitle}
-        </Typography>
+        {user ? (
+          <>
+            <Typography
+              color={mainColor}
+              variant="h6"
+              fontWeight="500"
+              sx={{
+                "&:hover": {
+                  color: secondaryColor,
+                },
+                display: "block", // Ensures proper spacing and alignment
+              }}
+            >
+              {user.firstName} {user.lastName}
+            </Typography>
+            <Typography color={mediumColor} fontSize="0.75rem">
+              {/* Additional user details if needed */}
+            </Typography>
+          </>
+        ) : (
+          <Typography color={mediumColor} fontSize="0.75rem">
+            Loading user data...
+          </Typography>
+        )}
       </Box>
     </Box>
   );

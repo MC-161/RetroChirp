@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography, Avatar, useTheme } from "@mui/material";
+import { Box, Typography,useTheme } from "@mui/material";
 import UserImage from "./UserImage";
 import { useSelector } from "react-redux";
 import {format} from "timeago.js"

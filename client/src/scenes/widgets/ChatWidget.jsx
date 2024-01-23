@@ -7,15 +7,51 @@ import FlexBetween from "components/FlexBetween";
 import Msg from "components/Msg";
 import ChatMenu from "components/ChatMenu";
 import { useEffect } from "react";
+import {io} from "socket.io-client"
 
 const ChatWidget = () => {
   const { _id } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
   const [currentChat, setCurrentChat] = useState(null);
   const [messages, setMessages] = useState(null);
+  const [socket, setSocket] = useState(null);
   const [messageInput, setMessageInput] = useState("");
   const [recId, setRecId] = useState(null);
   const scrollRef = useRef();
+  const [arrivalMessage, setArrivalMessage] = useState(null);
+
+  useEffect(() => {
+    // Initialize socket connection when the component mounts
+    const socketInstance = io("ws://localhost:8900");
+    setSocket(socketInstance);
+
+    socketInstance.on("getMessage", (data) => {
+      setArrivalMessage({
+        sender: data.senderId,
+        text: data.text,
+        createdAt: Date.now(),
+      });
+    });
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      socketInstance.disconnect(); // Disconnect the socket when the component unmounts
+    };
+  }, []);
+
+  useEffect(() => {
+    // Add arrivalMessage to messages when it changes
+    arrivalMessage &&
+      currentChat?.members.includes(arrivalMessage.sender) &&
+      setMessages((prev) => [...prev, arrivalMessage]);
+  }, [arrivalMessage, currentChat]);
+
+  useEffect(() => {
+    // Initialize socket connection and addUser event when the component mounts
+    if (socket) {
+      socket.emit("addUser", _id);
+    }
+  }, [socket, _id]);
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -24,21 +60,33 @@ const ChatWidget = () => {
       sender: _id,
       text: messageInput,
     };
+
+    const receiverId = currentChat.members.find(
+      (member) => member !== _id
+    );
+
+    // Emit sendMessage event to the server
+    socket.emit("sendMessage", {
+      senderId: _id,
+      receiverId,
+      text: messageInput,
+    });
+
     try {
       const res = await fetch("http://localhost:3001/messages/", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json", // Specify content type
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(message), // Convert message object to JSON string
+        body: JSON.stringify(message),
       });
 
       if (!res.ok) {
         throw new Error(`Failed to send message: ${res.status}`);
       }
 
-      const newMessage = await res.json(); // Await the JSON parsing
+      const newMessage = await res.json();
       setMessages([...messages, newMessage]);
       setMessageInput("");
     } catch (err) {

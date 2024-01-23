@@ -1,7 +1,6 @@
 // ChatMenu.js
 import React, { useEffect, useState } from "react";
 import { Box, TextField } from "@mui/material";
-import FlexBetween from "./FlexBetween";
 import Conversation from "components/Conversation";
 import { useSelector } from "react-redux";
 
@@ -36,8 +35,8 @@ const ChatMenu = ({ userId, onSelectConversation }) => {
   }, []);
 
   return (
-    <Box height={"100%"} overflow={"scroll"} gap={"1rem"}>
-      <TextField placeholder="Search Friends" variant="outlined" />
+    <Box height={"100%"} overflowy={"scroll"} gap={"1rem"}>
+      <TextField placeholder="Search Friends" variant="outlined" fullWidth />
       <Box>
         {conversations.map((c) => (
           <div key={c._id} onClick={() => onSelectConversation(c)}>

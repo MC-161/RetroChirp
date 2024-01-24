@@ -39,34 +39,3 @@ export const getConversationBetweenUsers = async (req, res) => {
   }
 };
 
-// Get friends without a conversation for a user
-export const getFriendsWithoutConversation = async (req, res) => {
-  try {
-    const userId = req.params.userId;
-
-    // Get conversations for the user
-    const userConversations = await Conversation.find({
-      members: userId,
-    });
-
-    // Extract friend IDs from the conversations
-    const friendsInConversations = userConversations.reduce(
-      (friends, conversation) => [...friends, ...conversation.members],
-      []
-    );
-
-    // Get all friends for the user
-    const allFriends = await Friend.find({
-      _id: { $ne: userId }, // Exclude the user itself
-    });
-
-    // Filter out friends who are in any conversation
-    const friendsWithoutConversation = allFriends.filter(
-      (friend) => !friendsInConversations.includes(friend._id.toString())
-    );
-
-    res.json(friendsWithoutConversation);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};

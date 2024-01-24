@@ -4,7 +4,6 @@ import {
   getConversationsOfUser,
   getConversationBetweenUsers,
   createConversation,
-  getFriendsWithoutConversation, // Import the new function
 } from '../controllers/conversations.js';
 
 const router = express.Router();
@@ -15,6 +14,5 @@ router.post('/', createConversation);
 // Read
 router.get('/:userId', verifyToken, getConversationsOfUser);
 router.get('/find/:firstUserId/:secondUserId', verifyToken, getConversationBetweenUsers);
-router.get('/friends-without-conversation/:userId', verifyToken, getFriendsWithoutConversation);
 
 export default router;

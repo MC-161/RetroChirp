@@ -1,10 +1,11 @@
+// Conversation.js
 import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import UserImage from "./UserImage";
 import { useTheme } from "@mui/material";
 import { useSelector } from "react-redux";
 
-const Conversation = ({ conversation, currentUser }) => {
+const Conversation = ({ conversation, currentUser, searchTerm }) => {
   const [user, setUser] = useState(null);
   const { palette } = useTheme();
   const mainColor = palette.primary.main;
@@ -22,7 +23,6 @@ const Conversation = ({ conversation, currentUser }) => {
         },
       });
       const data = await response.json();
-      console.log(data);
       setUser(data);
     } catch (error) {
       console.error('Error fetching user:', error.message);
@@ -33,6 +33,18 @@ const Conversation = ({ conversation, currentUser }) => {
     const friendId = conversation.members.find((member) => member !== currentUser);
     getUser(friendId);
   }, [currentUser, conversation]);
+
+  // Concatenate first and last names with a space in between
+  const fullName = `${user?.firstName} ${user?.lastName}`;
+
+  // Check if the friend's name includes the searchTerm
+  if (
+    searchTerm &&
+    user &&
+    !fullName.toLowerCase().includes(searchTerm.toLowerCase())
+  ) {
+    return null; // If not, don't render this conversation when searching
+  }
 
   return (
     <Box
@@ -71,7 +83,7 @@ const Conversation = ({ conversation, currentUser }) => {
                 display: "block", // Ensures proper spacing and alignment
               }}
             >
-              {user.firstName} {user.lastName}
+              {fullName}
             </Typography>
             <Typography color={mediumColor} fontSize="0.75rem">
               {/* Additional user details if needed */}

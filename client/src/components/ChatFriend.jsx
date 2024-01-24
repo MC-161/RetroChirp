@@ -24,16 +24,16 @@ const ChatFriend = ({ friendId, name, subtitle, userPicturePath }) => {
   const startConversation = async () => {
     try {
       const res = await fetch(`http://localhost:3001/conversations/`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        senderId: _id,
-        receiverId: friendId, // Corrected the spelling to "receiverId"
-      }),
-    });
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          senderId: _id,
+          receiverId: friendId, // Corrected the spelling to "receiverId"
+        }),
+      });
 
       if (!res.ok) {
         throw new Error("Failed to start conversation");
@@ -77,7 +77,8 @@ const ChatFriend = ({ friendId, name, subtitle, userPicturePath }) => {
         onClick={startConversation} // Call startConversation instead of patchFriend
         sx={{ backgroundColor: primaryDark, p: "0.6rem" }}
       >
-        <ChatOutlined sx={{ color: main }} /> {/* Changed to ChatOutlined icon */}
+        <ChatOutlined sx={{ color: main }} />{" "}
+        {/* Changed to ChatOutlined icon */}
       </IconButton>
     </FlexBetween>
   );

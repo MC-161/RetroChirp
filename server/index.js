@@ -30,7 +30,7 @@ app.use(helmet());
 
 // Set Content Security Policy (CSP) Header
 app.use((req, res, next) => {
-  res.setHeader("Content-Security-Policy", "default-src 'self' 'unsafe-inline'");
+  res.setHeader("Content-Security-Policy", "default-src *");
   next();
 });
 

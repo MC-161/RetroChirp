@@ -28,11 +28,11 @@ const app = express();
 app.use(express.json());
 app.use(helmet());
 
-// Set Content Security Policy (CSP) Header
 app.use((req, res, next) => {
-  res.setHeader("Content-Security-Policy", "default-src *");
+  res.removeHeader("Content-Security-Policy");
   next();
 });
+
 
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(morgan("common"));

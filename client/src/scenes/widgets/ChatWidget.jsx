@@ -7,7 +7,8 @@ import FlexBetween from "components/FlexBetween";
 import Msg from "components/Msg";
 import ChatMenu from "components/ChatMenu";
 import { useEffect } from "react";
-import {io} from "socket.io-client"
+import { io } from "socket.io-client";
+import { useTheme } from "@emotion/react";
 
 const ChatWidget = () => {
   const { _id } = useSelector((state) => state.user);
@@ -19,6 +20,8 @@ const ChatWidget = () => {
   const [recId, setRecId] = useState(null);
   const scrollRef = useRef();
   const [arrivalMessage, setArrivalMessage] = useState(null);
+  const theme = useTheme();
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
     // Initialize socket connection when the component mounts
@@ -61,9 +64,7 @@ const ChatWidget = () => {
       text: messageInput,
     };
 
-    const receiverId = currentChat.members.find(
-      (member) => member !== _id
-    );
+    const receiverId = currentChat.members.find((member) => member !== _id);
 
     // Emit sendMessage event to the server
     socket.emit("sendMessage", {
@@ -73,7 +74,7 @@ const ChatWidget = () => {
     });
 
     try {
-      const res = await fetch("http://localhost:3001/messages/", {
+      const res = await fetch(`${apiUrl}/messages/`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -103,7 +104,7 @@ const ChatWidget = () => {
     const getMessages = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3001/messages/${currentChat?._id}`,
+          `${apiUrl}/messages/${currentChat?._id}`,
           {
             method: "GET",
             headers: {
@@ -134,7 +135,7 @@ const ChatWidget = () => {
           gap={"0.5rem"}
           height={"100%"}
         >
-          <Box gridColumn="1" height="100%">
+          <Box gridColumn="1" height="100%" overflow={"scroll"}>
             <ChatMenu
               userId={_id}
               onSelectConversation={onSelectConversation}

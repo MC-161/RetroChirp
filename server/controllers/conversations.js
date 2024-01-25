@@ -39,3 +39,13 @@ export const getConversationBetweenUsers = async (req, res) => {
   }
 };
 
+/* DELETE */
+export const deleteConversation = async (req, res) => {
+  try {
+    const { conversationId } = req.params;
+    await Conversation.findByIdAndDelete(conversationId);
+    res.status(200).json({ message: "Conversation deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};

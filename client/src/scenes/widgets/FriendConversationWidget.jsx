@@ -12,9 +12,10 @@ const FriendListWidget = ({ userId, conversations}) => {
   const token = useSelector((state) => state.token);
   const friends = useSelector((state) => state.user.friends);
   const [chatFriends , setChatFriends] = useState(null)
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const getFriends = async () => {
-    const response = await fetch(`http://localhost:3001/users/${userId}/friends`, {
+    const response = await fetch(`${apiUrl}/users/${userId}/friends`, {
       method: "GET",
       headers: { Authorization: `Bearer ${token}` },
     });

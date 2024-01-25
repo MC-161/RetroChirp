@@ -9,10 +9,11 @@ const ChatsPage = () => {
   const token = useSelector((state) => state.token);
   const { _id } = useSelector((state) => state.user);
   const userId = _id;
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const getUser = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/users/${userId}`, {
+      const response = await fetch(`${apiUrl}/users/${userId}`, {
         method: "GET",
         headers: { Authorization: `Bearer ${token}` },
       });

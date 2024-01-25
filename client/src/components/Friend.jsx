@@ -12,6 +12,7 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
   const { _id } = useSelector((state) => state.user);
   const token = useSelector((state) => state.token);
   const friends = useSelector((state) => state.user.friends);
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const { palette } = useTheme();
   const primaryDark = palette.background.default;
@@ -22,7 +23,7 @@ const Friend = ({ friendId, name, subtitle, userPicturePath }) => {
 
   const patchFriend = async () => {
     const response = await fetch(
-      `http://localhost:3001/users/${_id}/${friendId}`,
+      `${apiUrl}/users/${_id}/${friendId}`,
       {
         method: "PATCH",
         headers: {

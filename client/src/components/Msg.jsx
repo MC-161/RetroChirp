@@ -8,6 +8,7 @@ const Msg = ({ recId, message, isSender }) => {
   const [user, setUser] = useState(null);
   const token = useSelector((state) => state.token);
   const theme = useTheme();
+  const apiUrl = process.env.REACT_APP_API_URL;
   const messageContainerStyles = {
     display: "flex",
     alignItems: "center",
@@ -29,7 +30,7 @@ const Msg = ({ recId, message, isSender }) => {
 
   const getUser = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/users/${recId}`, {
+      const response = await fetch(`${apiUrl}/users/${recId}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,

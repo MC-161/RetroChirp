@@ -4,6 +4,7 @@ import {
   getConversationsOfUser,
   getConversationBetweenUsers,
   createConversation,
+  deleteConversation,
 } from '../controllers/conversations.js';
 
 const router = express.Router();
@@ -14,5 +15,8 @@ router.post('/', createConversation);
 // Read
 router.get('/:userId', verifyToken, getConversationsOfUser);
 router.get('/find/:firstUserId/:secondUserId', verifyToken, getConversationBetweenUsers);
+
+// Delete
+router.delete('/:conversationId', verifyToken, deleteConversation);
 
 export default router;

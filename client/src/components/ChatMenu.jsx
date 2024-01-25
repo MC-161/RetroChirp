@@ -1,6 +1,5 @@
-// ChatMenu.js
 import React, { useEffect, useState } from "react";
-import { Box, TextField, Button, Typography, Modal, Backdrop, Fade } from "@mui/material";
+import { Box, TextField, Button, Modal, Backdrop, Fade } from "@mui/material";
 import Conversation from "components/Conversation";
 import FriendListWidget from "scenes/widgets/FriendConversationWidget";
 import { useSelector } from "react-redux";
@@ -9,12 +8,15 @@ const ChatMenu = ({ userId, onSelectConversation }) => {
   const [conversations, setConversations] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [showFriendList, setShowFriendList] = useState(false);
+  const [selectedConversation, setSelectedConversation] = useState(null);
   const token = useSelector((state) => state.token);
-  const friends = useSelector((state) => state.user.friends);
+
+  // Access environment variables
+  const apiUrl = process.env.REACT_APP_API_URL;
 
   const getConversations = async () => {
     try {
-      const res = await fetch(`http://localhost:3001/conversations/${userId}`, {
+      const res = await fetch(`${apiUrl}/conversations/${userId}`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -27,7 +29,6 @@ const ChatMenu = ({ userId, onSelectConversation }) => {
       }
 
       const conversations = await res.json();
-      console.log(conversations);
       setConversations(conversations);
     } catch (error) {
       console.error("Error fetching conversations:", error.message);
@@ -42,8 +43,30 @@ const ChatMenu = ({ userId, onSelectConversation }) => {
     setShowFriendList((prev) => !prev);
   };
 
+  const handleDeleteConversation = async (conversationId) => {
+    try {
+      const res = await fetch(`${apiUrl}/conversations/${conversationId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error(`Failed to delete conversation: ${res.status}`);
+      }
+
+      setConversations((prevConversations) =>
+        prevConversations.filter((conversation) => conversation._id !== conversationId)
+      );
+      window.location.reload();
+    } catch (error) {
+      console.error("Error deleting conversation:", error.message);
+    }
+  };
+
   return (
-    <Box height={"100%"} overflowy={"scroll"} gap={"1rem"}>
+    <Box>
       <TextField
         placeholder="Search Friends"
         variant="outlined"
@@ -75,22 +98,35 @@ const ChatMenu = ({ userId, onSelectConversation }) => {
               boxShadow: 24,
             }}
           >
-            {/* Pass filtered friends to FriendListWidget */}
             <FriendListWidget userId={userId} conversations={conversations}/>
           </Box>
         </Fade>
       </Modal>
-      <Box>
+      <div>
         {conversations.map((c) => (
-          <div key={c._id} onClick={() => onSelectConversation(c)}>
+          <div
+            key={c._id}
+            onClick={() => {
+              onSelectConversation(c);
+              setSelectedConversation(c);
+            }}
+            style={{
+              cursor: "pointer",
+              backgroundColor:
+                selectedConversation && selectedConversation._id === c._id
+                  ? "#f0f0f0"
+                  : "transparent",
+            }}
+          >
             <Conversation
               conversation={c}
               currentUser={userId}
               searchTerm={searchTerm}
+              onDeleteConversation={handleDeleteConversation}
             />
           </div>
         ))}
-      </Box>
+      </div>
     </Box>
   );
 };

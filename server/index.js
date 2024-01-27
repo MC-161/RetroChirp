@@ -46,7 +46,7 @@ app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
 // Enable CORS for specific origin
 const corsOptions = {
-  origin: 'http://localhost:3001',
+  origin: 'http://localhost:3000',
 };
 
 app.use(cors(corsOptions));

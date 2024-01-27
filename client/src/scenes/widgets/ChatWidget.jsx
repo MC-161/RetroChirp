@@ -25,7 +25,7 @@ const ChatWidget = () => {
 
   useEffect(() => {
     // Initialize socket connection when the component mounts
-    const socketInstance = io("ws://localhost:8900");
+    const socketInstance = io("wss://websoc.onrender.com");
     setSocket(socketInstance);
 
     socketInstance.on("getMessage", (data) => {

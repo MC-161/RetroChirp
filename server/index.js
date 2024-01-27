@@ -44,6 +44,13 @@ app.use(morgan("common"));
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
+// Enable CORS for specific origin
+const corsOptions = {
+  origin: 'http://localhost:3001',
+};
+
+app.use(cors(corsOptions));
+
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
 
 /* FILE STORAGE */

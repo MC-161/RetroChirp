@@ -16,8 +16,22 @@ export const register = async (req, res) => {
       game,
     } = req.body;
 
+    console.log('Received user input:', {
+      firstName,
+      lastName,
+      email,
+      password,
+      picturePath,
+      friends,
+      platform,
+      game,
+    });
+
     const salt = await bcrypt.genSalt(10);
+    console.log('Generated salt:', salt);
+
     const passwordHash = await bcrypt.hash(password, salt);
+    console.log('Generated password hash:', passwordHash);
 
     const newUser = new User({
       firstName,
@@ -31,12 +45,14 @@ export const register = async (req, res) => {
       viewedProfile: Math.floor(Math.random() * 10000),
       impressions: Math.floor(Math.random() * 10000),
     });
+
     const savedUser = await newUser.save();
     res.status(201).json(savedUser);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 /* LOGGING IN */
 export const login = async (req, res) => {

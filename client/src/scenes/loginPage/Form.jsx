@@ -61,40 +61,29 @@ const Form = () => {
   const apiUrl = process.env.REACT_APP_API_URL;
 
   const register = async (values, onSubmitProps) => {
-    try {
-      const formData = new FormData();
-      formData.append("firstName", values.firstName);
-      formData.append("lastName", values.lastName);
-      formData.append("email", values.email);
-      formData.append("password", values.password);
-      formData.append("game", values.game);
-      formData.append("platform", values.platform);
-      formData.append("twitter", values.twitter || "");
-      formData.append("instagram", values.instagram || "");
-      formData.append("picture", values.picture); // Append picture file
+    const formData = new FormData();
+    for (let value in values) {
+      formData.append(value, values[value]);
+    }
+    formData.append("picturePath", values.picture.name);
 
-      const response = await fetch(`${apiUrl}/auth/register`, {
+    const savedUserResponse = await fetch(
+      `${apiUrl}/auth/register`,
+      {
         method: "POST",
         body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to register user");
       }
+    );
+    const savedUser = await savedUserResponse.json();
+    onSubmitProps.resetForm();
 
-      const savedUser = await response.json();
-      onSubmitProps.resetForm();
-
-      if (savedUser) {
-        setPageType("login");
-      }
-    } catch (error) {
-      console.error("Error registering user:", error);
+    if (savedUser) {
+      setPageType("login");
     }
   };
 
   const login = async (values, onSubmitProps) => {
-    const loggedInResponse = await fetch(`${apiUrl}/auth/login`, {
+    const loggedInResponse = await fetch("http://localhost:3001/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
